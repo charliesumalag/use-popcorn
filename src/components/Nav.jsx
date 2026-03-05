@@ -1,0 +1,17 @@
+import React from 'react';
+import Search from "./Search";
+import Logo from "./Logo";
+import NumResults from './NumResults'
+
+const Nav = () => {
+
+    return (
+    <nav className="nav-bar">
+        <Logo />
+        <Search />
+        <NumResults />
+      </nav>
+  )
+}
+
+export default Nav
