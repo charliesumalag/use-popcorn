@@ -66,6 +66,7 @@ export default function App() {
 
   const [movies, setMovies] = useState([]);
   const [watched, setWatched] = useState(tempWatchedData);
+  const [isLoading, setIsLoading] = useState(false);
 
 
   // useEffect(() => {
@@ -76,9 +77,12 @@ export default function App() {
 
   useEffect(function() {
     async function fetchMovies() {
+      setIsLoading(true);
       const response = await fetch(`http://www.omdbapi.com/?apikey=${API}&s=interstellar`);
       const data = await response.json();
       setMovies(data.Search);
+
+      setIsLoading(false);
     }
 
     fetchMovies();
@@ -97,7 +101,7 @@ export default function App() {
       {/* <Main movies={movies} tempMovieData={tempMovieData} tempWatchedData={tempWatchedData}  average={average}/> */}
       <Main>
         <Box>
-          <MovieList movies={movies} tempMovieData={tempMovieData} />
+          {isLoading ? <p className="loader">Loading ....</p>  :   <MovieList movies={movies} tempMovieData={tempMovieData} />}
         </Box>
         <Box>
           <WatchedSummary watched={watched} average={average} />
