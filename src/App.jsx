@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Nav from "./components/Nav";
 import Main from "./components/Main";
 import Search from "./components/Search";
@@ -68,7 +68,13 @@ export default function App() {
   const [watched, setWatched] = useState(tempWatchedData);
 
 
-  fetch(`http://www.omdbapi.com/?apikey=${API}&s=interstellar`).then(res => res.json()).then(data => setMovies(data.Search));
+  useEffect(() => {
+    fetch(`http://www.omdbapi.com/?apikey=${API}&s=interstellar`).then(res => res.json()).then(data => setMovies(data.Search));
+  },[])
+  console.log(movies);
+  
+
+
 
   return (
     <>
