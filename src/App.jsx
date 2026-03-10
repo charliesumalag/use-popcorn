@@ -6,6 +6,7 @@ import WatchedMoviesList from "./components/WatchedMoviesList";
 import WatchBox from "./components/WatchBox";
 import MovieList from "./components/MovieList";
 import WatchedSummary from "./components/WatchedSummary";
+import Errorr from "./components/Error";
 
 
 import NumResults from './components/NumResults'
@@ -67,6 +68,9 @@ export default function App() {
   const [movies, setMovies] = useState([]);
   const [watched, setWatched] = useState(tempWatchedData);
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage,setErrorMessage] = useState('');
+
+  const searched = 'fasf';
 
 
   // useEffect(() => {
@@ -77,12 +81,24 @@ export default function App() {
 
   useEffect(function() {
     async function fetchMovies() {
-      setIsLoading(true);
-      const response = await fetch(`http://www.omdbapi.com/?apikey=${API}&s=interstellar`);
-      const data = await response.json();
-      setMovies(data.Search);
+      try {
+        setIsLoading(true);
+        const response = await fetch(`http://www.omdbapi.com/?apikey=${API}&s=${searched}`);
 
-      setIsLoading(false);
+        if(!response.ok) throw new Error("Fetching Failed.");
+        const data = await response.json();
+        console.log(data);
+
+
+        if(data.Response === "False") throw new Error("Movie not found.");
+
+        setMovies(data.Search);
+
+      } catch (err) {
+        setErrorMessage(err.message);
+      }finally{
+        setIsLoading(false);
+      }
     }
 
     fetchMovies();
@@ -101,7 +117,9 @@ export default function App() {
       {/* <Main movies={movies} tempMovieData={tempMovieData} tempWatchedData={tempWatchedData}  average={average}/> */}
       <Main>
         <Box>
-          {isLoading ? <p className="loader">Loading ....</p>  :   <MovieList movies={movies} tempMovieData={tempMovieData} />}
+          {isLoading && <p className="loader">Loading ....</p>}
+          {errorMessage && <Errorr message={errorMessage} />}
+          {!isLoading && !errorMessage  && <MovieList movies={movies} tempMovieData={tempMovieData} />}
         </Box>
         <Box>
           <WatchedSummary watched={watched} average={average} />
