@@ -7,6 +7,7 @@ import WatchBox from "./components/WatchBox";
 import MovieList from "./components/MovieList";
 import WatchedSummary from "./components/WatchedSummary";
 import Errorr from "./components/Error";
+import SelectedMovie from "./components/SekectedMovie";
 
 
 import NumResults from './components/NumResults'
@@ -70,10 +71,15 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage,setErrorMessage] = useState('');
   const [query, setQuery] = useState('');
-  console.log(query);
+  const [selectedId, setSelectedId] = useState(null);
 
+  function handleSelectMovie(id) {
+    setSelectedId(selectedId => selectedId === id ? null : id);
+  }
 
-
+  function handleCloseMovie() {
+    setSelectedId(null);
+  }
 
 
   // useEffect(() => {
@@ -85,13 +91,6 @@ export default function App() {
   useEffect(function() {
     async function fetchMovies() {
       try {
-
-        // if(query.length < 3){
-        //   setMovies([]);
-        //   setErrorMessage("");
-        //   return;
-        // }
-
         setIsLoading(true);
         setErrorMessage('');
         const response = await fetch(`http://www.omdbapi.com/?apikey=${API}&s=${query}`);
@@ -134,11 +133,14 @@ export default function App() {
         <Box>
           {isLoading && <p className="loader">Loading ....</p>}
           {errorMessage && <Errorr message={errorMessage} />}
-          {!isLoading && !errorMessage  && <MovieList movies={movies} tempMovieData={tempMovieData} />}
+          {!isLoading && !errorMessage  && <MovieList movies={movies} tempMovieData={tempMovieData} onSelectMovie={handleSelectMovie} onCloseMovie={handleCloseMovie}/>}
         </Box>
         <Box>
-          <WatchedSummary watched={watched} average={average} />
-          <WatchedMoviesList watched={watched}/>
+         {selectedId ? <SelectedMovie selectedId={selectedId} onCloseMovie={handleCloseMovie} /> :
+          <>
+            <WatchedSummary watched={watched} average={average} />
+            <WatchedMoviesList watched={watched}/>
+          </>}
         </Box>
       </Main>
     </>
