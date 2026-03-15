@@ -12,6 +12,7 @@ import SelectedMovie from "./components/SekectedMovie";
 
 import NumResults from './components/NumResults'
 import Box from "./components/ListBox";
+import Loader from "./components/Loader";
 
 const tempMovieData = [
   {
@@ -100,12 +101,7 @@ export default function App() {
 
 
         if(data.Response === "False") throw new Error("Movie not found.");
-        console.log(data.Response);
-
         setMovies(data.Search);
-
-
-
       } catch (err) {
         setErrorMessage(err.message);
       }finally{
@@ -131,7 +127,7 @@ export default function App() {
       {/* <Main movies={movies} tempMovieData={tempMovieData} tempWatchedData={tempWatchedData}  average={average}/> */}
       <Main>
         <Box>
-          {isLoading && <p className="loader">Loading ....</p>}
+          {isLoading && <Loader />}
           {errorMessage && <Errorr message={errorMessage} />}
           {!isLoading && !errorMessage  && <MovieList movies={movies} tempMovieData={tempMovieData} onSelectMovie={handleSelectMovie} onCloseMovie={handleCloseMovie}/>}
         </Box>
