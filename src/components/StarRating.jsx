@@ -15,14 +15,19 @@ import React, { useState } from 'react'
         margin: '0'
     }
 
-const StarRating = () => {
+const StarRating = ({onSetRating}) => {
     const [rating, setRating] = useState(0);
     const [tempRating, setTempRating] = useState(0);
+
+    function handleRating(rating) {
+      setRating(rating);
+      onSetRating(rating);
+    }
   return (
     <div style={containerStyle}>
         <div style={starContainerStyle}>
           {Array.from({length : 10}).map((_, index) =>
-            <Star full={tempRating ? tempRating >=index + 1 :   rating >= index + 1 } onHover={() => setTempRating(index + 1)} onOutHover={() => setTempRating(0)} onRate={() => setRating(index+1)} />
+            <Star key={index} full={tempRating ? tempRating >=index + 1 :   rating >= index + 1 } onHover={() => setTempRating(index + 1)} onOutHover={() => setTempRating(0)} onRate={() => handleRating(index + 1)} />
           )}
         </div>
         <p style={textStyle}>{tempRating || rating || ''}</p>

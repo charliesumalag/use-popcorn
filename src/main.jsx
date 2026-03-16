@@ -5,6 +5,7 @@ import App from './App.jsx'
 import StarRating from "./components/StarRating";
 
 createRoot(document.getElementById('root')).render(
-
-    <App />
+    <StrictMode>
+        <App />
+    </StrictMode>
 )

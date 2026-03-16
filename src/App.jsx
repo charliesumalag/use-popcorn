@@ -63,12 +63,14 @@ const tempWatchedData = [
 
 const API = "c81cafe6";
 
+
+
 const average = (arr) => arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
 
 export default function App() {
 
   const [movies, setMovies] = useState([]);
-  const [watched, setWatched] = useState(tempWatchedData);
+  const [watched, setWatched] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage,setErrorMessage] = useState('');
   const [query, setQuery] = useState('');
@@ -81,6 +83,14 @@ export default function App() {
   function handleCloseMovie() {
     setSelectedId(null);
   }
+
+  function  handleWatchedAddMovie(movie) {
+    setWatched(watched => [...watched, movie])
+  }
+
+      function handleDeleteWatched(id) {
+        setWatched(watch => watch.filter(movie => movie.imdbID !== id))
+    }
 
 
   // useEffect(() => {
@@ -132,10 +142,10 @@ export default function App() {
           {!isLoading && !errorMessage  && <MovieList movies={movies} tempMovieData={tempMovieData} onSelectMovie={handleSelectMovie} onCloseMovie={handleCloseMovie}/>}
         </Box>
         <Box>
-         {selectedId ? <SelectedMovie selectedId={selectedId} onCloseMovie={handleCloseMovie} /> :
+         {selectedId ? <SelectedMovie watched={watched} selectedId={selectedId} onCloseMovie={handleCloseMovie} onAddWatched={handleWatchedAddMovie} /> :
           <>
             <WatchedSummary watched={watched} average={average} />
-            <WatchedMoviesList watched={watched}/>
+            <WatchedMoviesList watched={watched} onDeleteWatchedMovie={handleDeleteWatched}/>
           </>}
         </Box>
       </Main>

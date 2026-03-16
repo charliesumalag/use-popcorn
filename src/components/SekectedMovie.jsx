@@ -5,9 +5,15 @@ import Loader from './Loader';
 
 const API = "c81cafe6";
 
-const SekectedMovie = ({selectedId, onCloseMovie}) => {
+const SekectedMovie = ({selectedId, onCloseMovie, onAddWatched, watched}) => {
     const [movie, setMovie] = useState({});
     const [isLoading, setIsLoading] = useState(false);
+    const [userRating, setUserRating] = useState(0);
+
+
+
+    const isWatched = watched.map(movie => movie.imdbID).includes(selectedId);
+    const watchedUserRating = watched.find(movie => movie.imdbID === selectedId)?.userRating;
 
     const {
         Title: title,
@@ -21,6 +27,22 @@ const SekectedMovie = ({selectedId, onCloseMovie}) => {
         Director: director,
         Genre: genre,
     } = movie;
+
+    function handleAdd() {
+        const newWatchedMovie={
+            imdbID: selectedId,
+            title,
+            year,
+            poster,
+            imdbRating: Number(imdbRating),
+            runtime: Number(runtime.split(' ').at(0)),
+            userRating,
+        }
+        onAddWatched(newWatchedMovie)
+        onCloseMovie();
+    }
+
+
 
     useEffect( function () {
         async function getMovieDetail() {
@@ -50,7 +72,13 @@ const SekectedMovie = ({selectedId, onCloseMovie}) => {
             </header>
             <section>
                 <div className='rating'>
-                    <StarRating></StarRating>
+                    {!isWatched ?
+                        <>
+                            <StarRating onSetRating={setUserRating}/>
+                            { userRating > 0 && <button className='btn-add' onClick={handleAdd}>Add to list</button> }
+                        </> :
+                        <p>You rated with movie {watchedUserRating}<span>⭐</span>  </p>
+                    }
                 </div>
                 <p><em>{plot}</em></p>
                 <p>Starring {actors}</p>
